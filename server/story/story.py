@@ -1,7 +1,7 @@
 ALIVE = 1
 DEAD = 0
 
-story = {
+mh370_crash = {
     'start': {
         'text': [
             "You're Huang, a Chinese exchange student on the last day of your stay in Singapore.",
@@ -83,7 +83,7 @@ story = {
             'and get a cup of coffee.'), 
         ],
         'choices': [
-            ('Info about Her', 'her_info'),
+            # ('Info about Her', 'her_info'),
             ('Keep watching', 'keep_watching'),
             ('Pause it and get a cup of coffee', 'get_coffee'),
         ]
@@ -156,7 +156,7 @@ story = {
             ('Crash!', 'plane_disappear'),
         ]
     },
-    'call_flight_attendant': {
+    'settle_seat': {
         'text': [
             ('You abandon your current thoughts and your mind starts veering towards home cooked food your mother will make for '
             'you on arrival. You hear a noise.'),

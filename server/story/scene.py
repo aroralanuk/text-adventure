@@ -35,8 +35,20 @@ class Scene(object):
         self.title = title
         self.desc = desc
 
+    def dictify(self):
+        return {
+            'title': self.title,
+            'desc': self.desc
+        }
+
+    # def __eq__(self, other):
+    #     return self.title == other.title 
+
     def __str__(self):
-        return (self.title + " | \"" + self.desc + "\".")
+        return (self.title)
+
+    __repr__ = __str__
+
 
 
 class Story(object):
@@ -44,36 +56,98 @@ class Story(object):
         if graph_dict == None:
             self.graph_dict = {}
             self.start = None
+            self.path = []
         else:
             self.graph_dict = graph_dict
 
+    def getStart(self):
+        return self.start
+
     def getChoices(self, current_scene):
-        return graph_dict.get(current_scene, {})
+        for keys in self.graph_dict:
+            if keys.title == current_scene.title:
+                return self.graph_dict[keys]
+        return []
+
+    def getCurrChoices(self):
+        print(self.getChoices(self.path[-1]))
+        if len(self.path) != 0:
+            return self.getChoices(self.path[-1])
+        else:
+            raise RuntimeError('Can\'t get choices for null scene')
 
     def addChoice(self, curr, choice):
 
-        if len(graph_dict.get(curr, -1)) == -1:
+        if self.graph_dict.get(curr, -1) == -1:
             raise ValueError('Out scene not found')
         else:
-            graph_dict[curr].append(choice)
-            graph_dict[choice[1]] = []
+            self.graph_dict[curr].append(choice)
+            self.graph_dict[choice[1]] = []
 
     def addStart(self,scene):
-        graph_dict[scene] = []
         self.start = scene
 
-    def serialize_story(self,story):
-        start_scene = story.get('start',-1)
-        if start_scene == -1:
-            raise ValueError('Every story needs a \"start\" labeled scene')
-        self.addStart(Scene('start','\n'.join(start_scene['text'])))
-        for choice in start_scene['choices']:
-            self.addChoice('start',choice)
+    def getPath(self):
+        return self.path
 
-        for scene in story.keys():
-            if scene != 'start':
-                for choice in story[scene]['choices']:
-                    self.addChoice(story[scene],choice)
+    def pushToPath(self, scene):
+        if isinstance(scene, Scene):
+            self.path.append(scene)
+        else:
+            raise ValueError('Path needs a valid scene to be pushed')
+
+
+
+    def getAllForkScenes(self):
+        scenes_text = []
+        for scene in self.graph_dict:
+            if len(self.graph_dict[scene]) > 1:
+                scenes_text.append(scene.title)
+        return scenes_text
+
+    def getStorySoFar(self):
+        storyline = []
+        prev = None
+        for scene in self.path:
+            if prev:
+                for choice in self.graph_dict[prev]:
+                    if choice[1] == scene:
+                        storyline.append(['>' + choice[0]])
+            storyline.append([scene.desc])
+            prev = scene
+        return storyline
+
+
+
+    def serialize_story(self, story):
+        
+        def helper(key):
+            scene = Scene(key,'\n'.join(story[key]['text']))
+            if self.graph_dict.get(scene,0) == 0:
+                self.graph_dict[scene] = []
+
+            if story[key]['choices'] == 0:
+                self.graph_dict[scene].append(0)
+                return scene
+            elif story[key]['choices'] == 1:
+                self.graph_dict[scene].append(1)
+                return scene
+            choices = [x for x in story[key]['choices']]
+            # print(f"graph: {self.graph_dict}")
+            # print(f"curr: {scene} and choices: {choices}\n")
+
+            for choice in choices:
+                self.graph_dict[scene].append((choice[0],helper(choice[1])))
+            return scene
+
+        helper('start')
+        game_start = Scene('start','\n'.join(story['start']['text']))
+        self.addStart(game_start)
+        # print(self.graph_dict)
+
+
+    def start_game(self,story):
+        pass
 
     # def play(self, story):
     #     self.serialize_story(story)
