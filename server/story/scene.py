@@ -2,34 +2,6 @@ import sys, os
 import time
 import random
 
-def type(text):
-    """Slowly types a line to the console.
-    Args:
-        text (str): A line of text.
-    """
-    # How quickly the text appears in the console.
-    typing_speed = 100
-
-    # Slowly prints each character in the text out.
-    for character in text:
-        sys.stdout.write(character)
-        sys.stdout.flush()
-        time.sleep(random.random() * 10.0 / typing_speed )
-
-
-def display_page_text(lines):
-    """Displays all the lines of text and prompts the user for input.
-    Args:
-        lines (list): [description]
-    """
-    for line in lines:
-        # Slowly types the line.
-       type(line + os.linesep)
-
-       # Randomly waits for a time between 0s and 1s.
-       time.sleep(0.1)
-    print()
-
 class Scene(object):
     def __init__(self, title, desc):
         self.title = title
@@ -41,11 +13,17 @@ class Scene(object):
             'desc': self.desc
         }
 
-    # def __eq__(self, other):
-    #     return self.title == other.title 
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.title == other.title 
+        else:
+            return False
+    
+    def __hash__(self):
+        return hash((self.title))
 
     def __str__(self):
-        return (self.title)
+        return ('Scene(' + self.title + ')')
 
     __repr__ = __str__
 
@@ -69,8 +47,11 @@ class Story(object):
                 return self.graph_dict[keys]
         return []
 
+    # def getChoiceIndex(self, curr, choice):
+    #     if self.graph_dict.get(curr,False):
+    #         return self.graph_dict[curr]
+
     def getCurrChoices(self):
-        print(self.getChoices(self.path[-1]))
         if len(self.path) != 0:
             return self.getChoices(self.path[-1])
         else:
@@ -96,8 +77,23 @@ class Story(object):
         else:
             raise ValueError('Path needs a valid scene to be pushed')
 
+    def makePath(self,jsonPath):
+        for jsonScene in jsonPath:
+            currScene = Scene(jsonScene['title'], jsonScene['desc'])
+            self.pushToPath(currScene)
 
-
+    def isValidChoice(self,choice):
+        # print(self.path)
+        if not self.path:
+            return False
+        curr = self.graph_dict[self.path[-1]]
+        choice_len = len(curr)
+        for i in range(choice_len):
+            validChoice = curr[i]
+            if choice == validChoice[1].title:
+                self.pushToPath(validChoice[1])
+                return i
+        return -1
     def getAllForkScenes(self):
         scenes_text = []
         for scene in self.graph_dict:
