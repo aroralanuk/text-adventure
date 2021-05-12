@@ -77,6 +77,12 @@ class Story(object):
         else:
             raise ValueError('Path needs a valid scene to be pushed')
 
+    def pushToPathTag(self, scene_tag):
+        for key in self.graph_dict:
+            if key.title == scene_tag:
+                self.pushToPath(key)
+
+
     def makePath(self,jsonPath):
         for jsonScene in jsonPath:
             currScene = Scene(jsonScene['title'], jsonScene['desc'])
@@ -94,6 +100,7 @@ class Story(object):
                 self.pushToPath(validChoice[1])
                 return i
         return -1
+
     def getAllForkScenes(self):
         scenes_text = []
         for scene in self.graph_dict:
@@ -108,7 +115,7 @@ class Story(object):
             if prev:
                 for choice in self.graph_dict[prev]:
                     if choice[1] == scene:
-                        storyline.append(['>' + choice[0]])
+                        storyline.append(['> ' + choice[0]])
             storyline.append([scene.desc])
             prev = scene
         return storyline
@@ -133,13 +140,24 @@ class Story(object):
             # print(f"curr: {scene} and choices: {choices}\n")
 
             for choice in choices:
-                self.graph_dict[scene].append((choice[0],helper(choice[1])))
+                recurse = helper(choice[1])
+                if recurse not in self.graph_dict[scene]:
+                    self.graph_dict[scene].append((choice[0],recurse))
             return scene
 
         helper('start')
+        self.clean_graph()
         game_start = Scene('start','\n'.join(story['start']['text']))
         self.addStart(game_start)
         # print(self.graph_dict)
+
+    def clean_graph(self):
+        for scene in self.graph_dict:
+            uniq = []
+            for child in self.graph_dict[scene]:
+                if child not in uniq:
+                    uniq.append(child)
+            self.graph_dict[scene] = uniq
 
 
     def start_game(self,story):

@@ -11,6 +11,7 @@ from  story.story import mh370_crash
 plane_crash = Story()
 plane_crash.serialize_story(mh370_crash)
 
+
 # firestore collection
 games_collection = db.collection('game_played')
 
@@ -84,7 +85,31 @@ def game_update(game_id):
 
 @app.route('/api/game/<string:game_id>', methods=['GET'])
 def get_update(game_id):
-    # TODO
-    pass
 
+    game_doc = games_collection.document(game_id)
+    game_ref = game_doc.get()
+    
+    # if such a game exists
+    if game_ref.exists:
+        game_status = game_ref.to_dict()
+
+        # look for current path
+        path = plane_crash.makePath(game_status['path'])
+
+        # testing 
+        plane_crash.pushToPathTag('alarm')
+        plane_crash.pushToPathTag('airport_arrival')
+        plane_crash.pushToPathTag('starbucks')
+        plane_crash.pushToPathTag('board_flight')
+        plane_crash.pushToPathTag('watch_her')
+        plane_crash.pushToPathTag('get_coffee')
+
+        payload = { 
+            'game_id' : game_id, 
+            'story_so_far': plane_crash.getStorySoFar(),
+            'choices': [(choice[0],choice[1].dictify()) for choice in plane_crash.getCurrChoices()],
+        }
+        return make_response(payload, 200)
+
+    return make_response("ERROR: can't load the game", 404)
 
