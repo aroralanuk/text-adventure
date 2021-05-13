@@ -1,0 +1,20 @@
+#navbar {
+  background-color: black;
+  border-bottom: 3px dashed white;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  height: 10vh;
+}
+
+.title > h1 {
+  /*
+    - Change font color to white
+    - Add a left margin of 16px
+    */
+  color: #33ff00;
+  font-size: 3vh;
+  margin-left: 2rem;
+}

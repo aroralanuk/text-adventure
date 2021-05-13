@@ -1,0 +1,52 @@
+.main-page {
+  background-color: rgba(0, 0, 0, 1);
+  height: 100vh;
+  width: 100%;
+  color: white;
+}
+
+.home-section {
+  font-family: "KoHo", sans-serif;
+}
+
+#welcome-text {
+  color: white;
+  margin: 1rem;
+  font-size: 20px;
+}
+
+button {
+  background-color: #33ff00;
+  border: #33ff00 2px solid;
+  color: black;
+  padding: 5px;
+  margin: 10px;
+  font-family: monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  display: inline-block;
+  height: 60px;
+}
+
+button:hover {
+  background-color: black;
+  color: #33ff00 !important;
+  cursor: pointer;
+}
+
+#start-button {
+  font-weight: 800;
+  font-size: 32px;
+}
+
+#start-button a {
+  margin: 0.5em;
+  text-decoration: none;
+}
+
+.main-section {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+}
