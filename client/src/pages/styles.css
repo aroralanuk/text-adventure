@@ -45,8 +45,15 @@ button:hover {
   text-decoration: none;
 }
 
-.main-section {
+.main-page {
+  height: 100vh;
   display: flex;
-  flex-flow: row;
-  justify-content: center;
+  flex-direction: column;
+}
+
+.main-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  /* height: 100%; */
 }
