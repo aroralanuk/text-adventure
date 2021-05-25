@@ -27,9 +27,11 @@ creating new game
 def create_game():
     game_id = uuid.uuid4()
 
+    plane_crash.serialize_story(mh370_crash)
     # pushing start scene
-    plane_crash.pushToPath(plane_crash.getStart())
-
+    
+    plane_crash.refreshGame()
+    
     # backend dataset
     dataset = { 'game_id' : game_id.hex }
     forks = plane_crash.getAllForkScenes() + ['dead_or_alive']
@@ -69,13 +71,15 @@ def game_update(game_id):
         current_scene = plane_crash.getPath()[-1]
 
         # testing 
-        data = { 'choice_made': 'alarm'}
+        # data = { 'choice_made': 'alarm'}
 
         # getting an index for the choice from the original graph if valid
         choice_index = plane_crash.isValidChoice(data["choice_made"])
 
         if choice_index != -1:
-            game_status[current_scene.title] = choice_index
+            game_status['path'] = [ele.dictify() for ele in plane_crash.getPath()]
+            if game_status.get(current_scene.title,None):
+                game_status[current_scene.title] = choice_index
             game_doc.update(game_status)
             return make_response("SUCCESS: game updated", 200)
         else:
@@ -93,22 +97,33 @@ def get_update(game_id):
     if game_ref.exists:
         game_status = game_ref.to_dict()
 
+        # print(game_status)
+        
         # look for current path
         path = plane_crash.makePath(game_status['path'])
 
         # testing 
-        plane_crash.pushToPathTag('alarm')
-        plane_crash.pushToPathTag('airport_arrival')
-        plane_crash.pushToPathTag('starbucks')
-        plane_crash.pushToPathTag('board_flight')
-        plane_crash.pushToPathTag('watch_her')
-        plane_crash.pushToPathTag('get_coffee')
+        # plane_crash.pushToPathTag('alarm')
+        # plane_crash.pushToPathTag('airport_arrival')
+        # plane_crash.pushToPathTag('starbucks')
+        # plane_crash.pushToPathTag('board_flight')
+        # plane_crash.pushToPathTag('watch_her')
+        # plane_crash.pushToPathTag('get_coffee')
+
+        dead_or_alive = plane_crash.isGameOver()
+        nextChoices = []
+        ref_dict = { 0: "dead", 1: "alive"}
+        if dead_or_alive == -1:
+            nextChoices = [(choice[0],choice[1].dictify()) for choice in plane_crash.getCurrChoices()]
+        else:
+            nextChoices = [(dead_or_alive, ref_dict[dead_or_alive])]
 
         payload = { 
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
-            'choices': [(choice[0],choice[1].dictify()) for choice in plane_crash.getCurrChoices()],
+            'choices': nextChoices
         }
+
         return make_response(payload, 200)
 
     return make_response("ERROR: can't load the game", 404)

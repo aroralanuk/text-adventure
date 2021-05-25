@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Typography } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import API from "../API";
 import logo from "../images/plane_ascii.png";
 import "./styles.css";
 
 export default function HomePage() {
+  let history = useHistory();
+
+  const createGame = async (e) => {
+    e.preventDefault();
+    API.createGame().then((response) => {
+      const game_id = response.data.game_id;
+      history.push({
+        pathname: "/story/" + game_id,
+        state: { game_id: game_id },
+      });
+    });
+  };
+
   return (
     <div className="main-page">
       <div
@@ -24,8 +39,8 @@ export default function HomePage() {
           assistant guide you along the way. Press the button below to start
           your misadventure ;)
         </Typography>
-        <button id="start-button">
-          <a href="/story">Start a new game</a>
+        <button id="start-button" onClick={createGame}>
+          <a href="/story/{}">Start a new game</a>
         </button>
       </div>
     </div>

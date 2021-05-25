@@ -11,11 +11,11 @@ const API = {
   },
 
   updateGame: function (game_id, choice_input) {
-    return axios.patch(`${server}/api/${game_id}`, choice_input);
+    return axios.patch(`${server}/api/game/${game_id}`, choice_input);
   },
 
   getGameUpdate: function (game_id) {
-    return axios.get(`${server}/api/${game_id}`);
+    return axios.get(`${server}/api/game/${game_id}`);
   },
 };
 

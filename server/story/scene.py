@@ -53,6 +53,7 @@ class Story(object):
 
     def getCurrChoices(self):
         if len(self.path) != 0:
+            print(self.getChoices(self.path[-1]))
             return self.getChoices(self.path[-1])
         else:
             raise RuntimeError('Can\'t get choices for null scene')
@@ -77,6 +78,11 @@ class Story(object):
         else:
             raise ValueError('Path needs a valid scene to be pushed')
 
+    def refreshGame(self):
+        self.path = []
+        self.pushToPath(self.start)
+
+
     def pushToPathTag(self, scene_tag):
         for key in self.graph_dict:
             if key.title == scene_tag:
@@ -84,13 +90,21 @@ class Story(object):
 
 
     def makePath(self,jsonPath):
+        self.path = []
         for jsonScene in jsonPath:
             currScene = Scene(jsonScene['title'], jsonScene['desc'])
             self.pushToPath(currScene)
 
+    def isGameOver(self):
+        choices = self.getCurrChoices()
+        if choices[0] == 1 or choices[0] == 0:
+            return choices[0]
+        else:
+            return -1
+
     def isValidChoice(self,choice):
         # print(self.path)
-        if not self.path:
+        if not self.path and self.isGameOver() != -1:
             return False
         curr = self.graph_dict[self.path[-1]]
         choice_len = len(curr)
@@ -113,6 +127,7 @@ class Story(object):
         prev = None
         for scene in self.path:
             if prev:
+                # print(self.path)
                 for choice in self.graph_dict[prev]:
                     if choice[1] == scene:
                         storyline.append(['> ' + choice[0]])
@@ -163,20 +178,4 @@ class Story(object):
     def start_game(self,story):
         pass
 
-    # def play(self, story):
-    #     self.serialize_story(story)
-    #     curr_scene = self.start  
-    #     while curr_scene != None:    
-    #         scene = story.get(curr_scene, None)
-    #         if scene == None:
-    #             curr_scene = None
-    #             break
-  
-    #     display_page_text(scene['text'])
-        
-    #     if len(page['Options']) == 0:      
-    #         curr_page = None      
-    #         break     
-        
-    #     curr_page = get_response(page['Options'])
             
