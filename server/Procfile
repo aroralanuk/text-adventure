@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 web: gunicorn entry:code
-=======
-web: gunicorn entry:app
->>>>>>> f8257dfb028b8c015a39cc7bab38f53e915785ce
