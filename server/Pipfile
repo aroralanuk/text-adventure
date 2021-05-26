@@ -13,6 +13,7 @@ requests = "*"
 flask-cors = "*"
 firebase_admin = "*"
 uuid = "*"
+gunicorn = "*"
 
 [scripts]
 server = "flask run"
