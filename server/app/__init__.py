@@ -6,6 +6,6 @@ from flask_migrate import Migrate
 
 # initialize Flask app
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
 
 from . import routes
