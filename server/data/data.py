@@ -7,6 +7,7 @@ import pandas as pd
 import sklearn # import scikit-learn
 from sklearn import preprocessing
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
@@ -73,17 +74,18 @@ labels = expanded_df['dead_or_alive']
 #getting percentage of win possibility from current playthrough
 X_train, X_TEMP, y_train, y_TEMP = train_test_split(features, labels, test_size=0.30) 
 X_validation, X_test, y_validation, y_test = train_test_split(X_TEMP, y_TEMP, test_size=0.50) 
-print(X_train.shape, X_validation.shape, X_test.shape)
+#print(X_train.shape, X_validation.shape, X_test.shape)
 
-#training the decision tree
-model = DecisionTreeClassifier().fit(X_train, y_train)
+#training the decision tree or forest of decision trees
+#model = DecisionTreeClassifier().fit(X_train, y_train)
+model = RandomForestClassifier().fit(features, labels)
 
 #testing predictions
-#array = np.array([1, 0, 1, 1, 0, 1, -1])
-#hint = model.predict(array.reshape(1, -1))
-#print(hint)
+array = np.array([1, 0, 1, 1, 0, 1, -1])
+hint = model.predict_proba(array.reshape(1, -1))
+print(hint)
 
-y_pred = model.predict(X_validation) 
-metrics(y_validation, y_pred) 
+#y_pred = model.predict(X_validation) 
+#metrics(y_validation, y_pred) 
 
-print(probabilityOfAWin(np.array([1, 0, 1, 1, 0, 1, -1]), expanded_df))
+#print(probabilityOfAWin(np.array([1, 0, 1, 1, 0, 1, -1]), expanded_df))
