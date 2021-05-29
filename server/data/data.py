@@ -1,6 +1,8 @@
 #database imports
-import firebase_admin
-from firebase_admin import credentials, db, initialize_app, firestore
+#import firebase_admin
+#from firebase_admin import credentials, db, initialize_app, firestore
+import sys
+sys.path.append('../')
 
 #model training imports
 import pandas as pd
@@ -13,15 +15,66 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 import numpy as np
 
+from app.initFirestore import db
+
 def metrics(y_true, y_pred):
     print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
     print('\nReport:\n', classification_report(y_true, y_pred))
 
-def probabilityOfAWin(currentPlaythrough, data):
-    numWins = len(data[(data['airport_arrival'] == currentPlaythrough[0]) & (data['starbucks'] == currentPlaythrough[1]) & (data['board_flight'] == currentPlaythrough[2]) & (data['watch_her'] == currentPlaythrough[3]) & (data['get_coffee'] == currentPlaythrough[4]) & (data['walk_into_cockpit'] == currentPlaythrough[5]) & (data['return_seat'] == currentPlaythrough[6]) & (data['dead_or_alive'] == 1)])
-    return numWins/(len(data))
+def getPrediction(currentChoices, currentScene, model):
+    returnDict = {}
+    #scene-to-index dict
+    featureIdx = {
+    "airport_arrival": 0,     #DTF or Starbucks
+    "starbucks": 1,           #Regular coffee or 3 shots
+    "board_flight": 2,        #sleep or watch her
+    "watch_her": 3,           #keep watching or get coffee
+    "get_coffee": 4,          #walk into cockpit or return to seat
+    "walk_into_cockpit": 5,   #help captain or help first officer
+    "return_seat": 6,         #call attendant or settle in seat
+    }
+    #get the prediction for choice 0
+    currentChoices[featureIdx[currentScene]] = 0
+    returnDict["0"] = model.predict_proba(currentChoices.reshape(1, -1))
+    #get the prediction for choice 1
+    currentChoices[featureIdx[currentScene]] = 1
+    returnDict["1"] = model.predict_proba(currentChoices.reshape(1, -1))
+    return returnDict
 
+def trainNewModel():
+    #import data
+    docs = db.collection('game_played').where('dead_or_alive', '!=', -1).stream()
+    full_df = pd.DataFrame()
+    for doc in docs:
+        whatType = doc.to_dict()
+        full_df = full_df.append(doc.to_dict(), ignore_index=True)
 
+    features_and_label = ['airport_arrival', 'starbucks', 'board_flight', 'watch_her', 'get_coffee', 'walk_into_cockpit', 'return_seat', 'dead_or_alive']#decide if we need label here
+
+    chosen_features = ['airport_arrival', 'starbucks', 'board_flight', 'watch_her', 'get_coffee', 'walk_into_cockpit', 'return_seat']
+
+    #take only needed features and label to predict
+    chosen_df = full_df[features_and_label]
+    expanded_df = pd.DataFrame()
+
+    for playthroughIdx in range(len(chosen_df)):
+        playthrough = chosen_df.loc[playthroughIdx]
+        for choice in range(len(playthrough)-2,0,-1):
+            if (playthrough[choice] != -1):
+                playthrough[choice] = -1
+                expanded_df = expanded_df.append(playthrough, ignore_index=True)
+
+    #split processed data into features and labels
+    features = expanded_df[chosen_features]
+    labels = expanded_df['dead_or_alive']
+    model = RandomForestClassifier().fit(features, labels)
+    return model
+
+model = trainNewModel()
+array = np.array([0, -1, -1, -1, -1, -1, -1])
+print(getPrediction(array, "board_flight", model))
+
+'''
 cred = credentials.Certificate('key.json')
 default_app = initialize_app(cred)
 
@@ -87,5 +140,4 @@ print(hint)
 
 #y_pred = model.predict(X_validation) 
 #metrics(y_validation, y_pred) 
-
-#print(probabilityOfAWin(np.array([1, 0, 1, 1, 0, 1, -1]), expanded_df))
+'''
