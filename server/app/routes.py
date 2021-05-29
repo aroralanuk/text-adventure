@@ -70,9 +70,6 @@ def game_update(game_id):
         plane_crash.makePath(game_status['path'])
         current_scene = plane_crash.getPath()[-1]
 
-        # testing 
-        # data = { 'choice_made': 'alarm'}
-
         # getting an index for the choice from the original graph if valid
         choice_index = plane_crash.isValidChoice(data["choice_made"])
 
@@ -117,6 +114,9 @@ def get_update(game_id):
             nextChoices = [(choice[0],choice[1].dictify()) for choice in plane_crash.getCurrChoices()]
         else:
             nextChoices = [(dead_or_alive, ref_dict[dead_or_alive])]
+            game_status['dead_or_alive'] = dead_or_alive
+            print(game_status)
+            game_doc.update(game_status)
 
         payload = { 
             'game_id' : game_id, 

@@ -97,7 +97,9 @@ class Story(object):
 
     def isGameOver(self):
         choices = self.getCurrChoices()
+        # print(f"vfsvfsvsvdd:{choices}")
         if choices[0] == 1 or choices[0] == 0:
+            print(choices[0])
             return choices[0]
         else:
             return -1

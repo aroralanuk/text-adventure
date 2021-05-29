@@ -26,7 +26,7 @@ mh370_crash = {
         'text': [
             ('You just arrived at the airport. You complete the security process. It\'s 11:35pm. You check your boarding pass - flight'
             ' no. MH370, departure time 12:40am, boarding gates open at 11:55 pm at gate 10.'),
-            ('\"Woof, that was fast. I\'ve 20 minutes to spare, let me grab a quck bit.\" You look around and decide to go to Din by'
+            ('\"Woof, that was fast. I\'ve 20 minutes to spare, let me grab a quck bit.\" You look around and decide to go to Din by '
             'Din Tai Fung or Starbucks.'),
         ],
         'choices': [

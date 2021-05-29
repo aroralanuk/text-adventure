@@ -8,12 +8,17 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
   // const dead_or_alive = choice[0][0];
 
   const storyHistory = story.map((para) => {
-    return <p>{para}</p>;
+    return <p key={para}>{para}</p>;
   });
 
   const restartGameButton = (label) => {
     return (
-      <button className="choice-button" value={label} onClick={restartGame}>
+      <button
+        className="choice-button"
+        value={label}
+        onClick={restartGame}
+        key={label}
+      >
         Restart game
       </button>
     );
@@ -28,6 +33,7 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
           className="choice-button"
           onClick={choiceSelected}
           value={choice.title}
+          key={label}
         >
           {label}
         </button>

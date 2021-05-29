@@ -25,7 +25,7 @@ const StoryMode = () => {
     e.preventDefault();
     let body = { choice_made: e.target.value };
     API.updateGame(game_id, body).then((response) => {
-      if (response.status == 200) {
+      if (response.status === 200) {
         setStatus(status + 1);
       }
     });
@@ -39,7 +39,7 @@ const StoryMode = () => {
         pathname: "/story/" + game_id,
         state: { game_id: game_id },
       });
-      if (response.status == 200) {
+      if (response.status === 200) {
         setStatus(status + 1);
       }
     });
