@@ -17,14 +17,8 @@ import numpy as np
 
 from app.initFirestore import db
 
-def metrics(y_true, y_pred):
-    print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
-    print('\nReport:\n', classification_report(y_true, y_pred))
 
-def getPrediction(currentChoices, currentScene, model):
-    returnDict = {}
-    #scene-to-index dict
-    featureIdx = {
+FEATURE_IDX = {
     "airport_arrival": 0,     #DTF or Starbucks
     "starbucks": 1,           #Regular coffee or 3 shots
     "board_flight": 2,        #sleep or watch her
@@ -32,13 +26,30 @@ def getPrediction(currentChoices, currentScene, model):
     "get_coffee": 4,          #walk into cockpit or return to seat
     "walk_into_cockpit": 5,   #help captain or help first officer
     "return_seat": 6,         #call attendant or settle in seat
-    }
+}
+FEATURES_SIZE = len(FEATURE_IDX)
+
+def metrics(y_true, y_pred):
+    print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
+    print('\nReport:\n', classification_report(y_true, y_pred))
+
+def getChoiceVector(choiceDict):
+    vector = [-1]*FEATURES_SIZE
+    for choice in choiceDict.keys():
+        if FEATURE_IDX.get(choice, None):
+            vector[FEATURE_IDX[choice]] = choiceDict[choice]
+    return vector
+
+def getPrediction(currentChoicesDict, currentScene, model):
+    currentChoices = np.array(getChoiceVector(currentChoicesDict))
+    returnDict = {}
+
     #get the prediction for choice 0
-    currentChoices[featureIdx[currentScene]] = 0
-    returnDict["0"] = model.predict_proba(currentChoices.reshape(1, -1))
+    currentChoices[FEATURE_IDX[currentScene]] = 0
+    returnDict["0"] = model.predict_proba(currentChoices.reshape(1, -1))[0]
     #get the prediction for choice 1
-    currentChoices[featureIdx[currentScene]] = 1
-    returnDict["1"] = model.predict_proba(currentChoices.reshape(1, -1))
+    currentChoices[FEATURE_IDX[currentScene]] = 1
+    returnDict["1"] = model.predict_proba(currentChoices.reshape(1, -1))[0]
     return returnDict
 
 def trainNewModel():
@@ -70,9 +81,9 @@ def trainNewModel():
     model = RandomForestClassifier().fit(features, labels)
     return model
 
-model = trainNewModel()
-array = np.array([0, -1, -1, -1, -1, -1, -1])
-print(getPrediction(array, "board_flight", model))
+# model = trainNewModel()
+# array = np.array([0, -1, -1, -1, -1, -1, -1])
+# print(getPrediction(array, "board_flight", model))
 
 '''
 cred = credentials.Certificate('key.json')

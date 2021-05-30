@@ -9,15 +9,17 @@ const StoryMode = () => {
   const [story, setStory] = useState([]);
   const [choice, setChoice] = useState([]);
   const [status, setStatus] = useState(false);
-  // const [hints, setHints] = useState([]);
+  const [currentHint, setCurrentHint] = useState("No hints here");
   const history = useHistory();
   const game_id = history.location.state.game_id;
 
   useEffect(() => {
     API.getGameUpdate(game_id).then((response) => {
-      const { choices, story_so_far } = response.data;
+      const { choices, story_so_far, hint } = response.data;
       setStory(story_so_far);
       setChoice(choices);
+      setCurrentHint(hint[0]);
+      console.log(hint);
     });
   }, [status]);
 
@@ -55,7 +57,7 @@ const StoryMode = () => {
           choiceSelected={choiceSelected}
           restartGame={restartGame}
         />
-        <AIPane />
+        <AIPane hint={currentHint} />
       </section>
     </div>
   );
