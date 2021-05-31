@@ -13,9 +13,9 @@ mh370_crash = {
     'alarm': {
         'text': [
             '"Beep beep beep boom beep beep..."',
-            ('the alarm goes off. You wake up from a nap, still carrying a headache from this morning\'s hangover. It takes a'
+            ('the alarm goes off. You wake up from a nap, still carrying a headache from this morning\'s hangover. It takes a ' 
             'few seconds for you to orient yourself. You take a peek at your phone.'),
-            ('\"Oh shit! It\'s 9\". It wasn\'t a nap, it was a coma. You hastily jump out of bed, straight into the shower. You get'
+            ('\"Oh shit! It\'s 9\". It wasn\'t a nap, it was a coma. You hastily jump out of bed, straight into the shower. You get '
             'dressed, check out of the hotel and head straight to the airport.'),
         ],
         'choices': [
@@ -53,7 +53,7 @@ mh370_crash = {
     },
     'rush_to_airport_restroom': {
         'text': [
-            'You digestive system can\'t handle 3 extra shots of espresso. You die due to instant acute diarrhoea.', 
+            'You digestive system can\'t handle 3 extra shots of espresso. You die due to instant acute diarrhoea. ', 
             'RIP, Huang. Lawsuit is filed against Starbucks but their lobbyists help them settle. THE END.',
         ],
         'choices': DEAD
@@ -61,7 +61,7 @@ mh370_crash = {
     'board_flight': {
         'text': [
             'You\'ve boarded the flight.', 
-            ('\"Welcome aboard Malaysian Airlines...\" and safety instructions follow. In a few moments, the flight takes off.'
+            ('\"Welcome aboard Malaysian Airlines...\" and safety instructions follow. In a few moments, the flight takes off. '
             'Seat belts sign\'s off and you decide to sleep or watch the movie Her.'),
         ],
         'choices': [
@@ -71,7 +71,7 @@ mh370_crash = {
     },
     'sleep': {
         'text': [
-            ('It\'s half past one after midnight and the plance inexplicably turns right and nosedives into a stall.'
+            ('It\'s half past one after midnight and the plance inexplicably turns right and nosedives into a stall. '
             'MH370 disappears off the skies. 239 presumed dead. THE END.')
         ],
         'choices': DEAD
@@ -91,8 +91,7 @@ mh370_crash = {
     'keep_watching': {
         'text': [
             ('The movie finishes off, leaves you in a very desolate state. You can\'t take it anymore and start sobbing. '
-            'You open the emergency hatch door and jump off, yelling \"Now, you can never have me, Song!!\".'),
-            'THE END.',
+            'You open the emergency hatch door and jump off, yelling \"Now, you can never have me, Song!!\". THE END.'),
         ],
         'choices': DEAD
     },
@@ -132,8 +131,7 @@ mh370_crash = {
     'help_first_officer': {
         'text': [
             ('The first officer regained the control of the plane and you two together tied the captain. Upon landing ' 
-            'in Beijing, you\'re praised for your heroics and you live to fight another day.'),
-            'THE END.',
+            'in Beijing, you\'re praised for your heroics and you live to fight another day. THE END.'),
         ],
         'choices': ALIVE
     },
@@ -142,8 +140,7 @@ mh370_crash = {
             ('You hold the first officer\'s lower body as the captain is sealing his mouth with tape. The captain resists both '
             'of you and air-arrests you. You land in Beijing and the police holds you in custody. You\'ve charged with '
             '\"being a accomplice in an attempt to mass murder\". You\'re sentenced for life. You\'ve brought great shame to '
-            'your family.'),
-            'THE END.',
+            'your family. THE END.'),
         ],
         'choices': DEAD
     },
@@ -169,8 +166,7 @@ mh370_crash = {
         'text': [
             ('The plane starts stalling. Everyone around you starts panicking as you hear the first officer screaming, \"Help! '
             'he\'s locked me out. He wants to kill us all!". It\'s too late, in a matter of moments MH370 disappears from the sky '
-            'with 239 passengers.'),
-            'THE END.',
+            'with 239 passengers. THE END.'),
         ],
         'choices': DEAD
     },

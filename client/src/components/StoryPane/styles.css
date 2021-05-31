@@ -14,7 +14,29 @@
   position: absolute;
   vertical-align: bottom;
   font-family: "Quicksand", sans-serif;
-  margin: 1rem;
+  margin: 1.5rem;
+  white-space: pre-line;
+}
+
+.left-section-content p {
+  margin-left: 1rem;
+}
+
+.game-over-outer {
+  border: 0.1rem dashed #33ff00;
+  width: 60%;
+  margin-top: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.game-over-inner {
+  border: 0.1rem dashed #33ff00;
+  margin: 0.2rem;
+  text-align: center;
+  padding: 0.5rem;
+
+  color: #33ff00;
 }
 
 .choice-button {
