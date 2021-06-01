@@ -6,11 +6,13 @@ from app.initFirestore import db
 
 from  story.scene import Story
 from  story.story import mh370_crash
+from data import data
 
 # initializing the storyline
 plane_crash = Story()
 plane_crash.serialize_story(mh370_crash)
 
+model = data.trainNewModel()
 
 # firestore collection
 games_collection = db.collection('game_played')
@@ -27,6 +29,7 @@ creating new game
 def create_game():
     game_id = uuid.uuid4()
 
+    print(model)
     plane_crash.serialize_story(mh370_crash)
     # pushing start scene
     
@@ -42,6 +45,9 @@ def create_game():
 
     # storing path so far
     dataset['path'] = [ele.dictify() for ele in plane_crash.getPath()]
+
+
+
 
     payload = { 
         'game_id' : game_id.hex, 
@@ -108,6 +114,7 @@ def get_update(game_id):
         # plane_crash.pushToPathTag('get_coffee')
 
         dead_or_alive = plane_crash.isGameOver()
+        current_title = plane_crash.getCurrentTitle()
         nextChoices = []
         ref_dict = { 0: "dead", 1: "alive"}
         if dead_or_alive == -1:
@@ -118,10 +125,25 @@ def get_update(game_id):
             print(game_status)
             game_doc.update(game_status)
 
+        non_features = ['game_id','dead_or_alive','path']
+        features_set = game_status
+        for nf in non_features:
+            features_set.pop(nf)
+        print(features_set)
+
+        bestOption = ()
+        if len(nextChoices) > 1:
+            prediction_vector = data.getPrediction(features_set, current_title, model)
+            print(prediction_vector)
+            bestOptionIndex = int(max(prediction_vector.items(),key=lambda x : x[1][1])[0])
+            bestOption = nextChoices[bestOptionIndex]
+            print(bestOption)
+
         payload = { 
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
-            'choices': nextChoices
+            'choices': nextChoices,
+            'hint': bestOption,
         }
 
         return make_response(payload, 200)

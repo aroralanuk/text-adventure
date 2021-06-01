@@ -41,6 +41,10 @@ class Story(object):
     def getStart(self):
         return self.start
 
+    def getCurrentTitle(self):
+        if len(self.path) != 0:
+            return self.path[-1].title
+
     def getChoices(self, current_scene):
         for keys in self.graph_dict:
             if keys.title == current_scene.title:
@@ -53,7 +57,6 @@ class Story(object):
 
     def getCurrChoices(self):
         if len(self.path) != 0:
-            print(self.getChoices(self.path[-1]))
             return self.getChoices(self.path[-1])
         else:
             raise RuntimeError('Can\'t get choices for null scene')
@@ -99,7 +102,6 @@ class Story(object):
         choices = self.getCurrChoices()
         # print(f"vfsvfsvsvdd:{choices}")
         if choices[0] == 1 or choices[0] == 0:
-            print(choices[0])
             return choices[0]
         else:
             return -1

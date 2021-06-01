@@ -1,10 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
-export default function AIPane() {
+export default function AIPane({ hint, restarted }) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
+
+  useEffect(() => {
+    setVisibleHint(false);
+    if (restarted) {
+      setHintsLeft(3);
+    }
+  }, [hint, restarted]);
+
+  const giveHint = () => {
+    console.log(hint);
+    if (hint) {
+      return "'" + hint + "' be yer best choice here.";
+    } else {
+      return "Free will be a figment o' our imagination, init?";
+    }
+  };
 
   const toggleHint = async (e) => {
     e.preventDefault();
@@ -12,16 +28,21 @@ export default function AIPane() {
       setVisibleHint(false);
     } else if (hintsLeft > 0) {
       setVisibleHint(true);
-      setHintsLeft(hintsLeft - 1);
+      if (hint) {
+        setHintsLeft(hintsLeft - 1);
+      }
     }
   };
 
   return (
     <section className="right-section">
       <div className="right-section-content">
-        {visibleHint && (
+        {visibleHint ? (
+          <p className="speech-bubble">{giveHint()}</p>
+        ) : (
           <p className="speech-bubble">
-            Ahoy! this is the ghost of Napoleon here to guide you!
+            Ahoy! this is the ghost of Napoleon here to guide you! You have{" "}
+            {hintsLeft} hints left.
           </p>
         )}
         <button id="show-hint-button" onClick={toggleHint}>
