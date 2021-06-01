@@ -10,6 +10,7 @@ const StoryMode = () => {
   const [choice, setChoice] = useState([]);
   const [status, setStatus] = useState(false);
   const [currentHint, setCurrentHint] = useState("No hints here");
+  const [newGame, setNewGame] = useState(true);
   const history = useHistory();
   const game_id = history.location.state.game_id;
 
@@ -19,6 +20,7 @@ const StoryMode = () => {
       setStory(story_so_far);
       setChoice(choices);
       setCurrentHint(hint[0]);
+      setNewGame(false);
       console.log(hint);
     });
   }, [status]);
@@ -43,6 +45,7 @@ const StoryMode = () => {
       });
       if (response.status === 200) {
         setStatus(status + 1);
+        setNewGame(true);
       }
     });
   };
@@ -57,7 +60,7 @@ const StoryMode = () => {
           choiceSelected={choiceSelected}
           restartGame={restartGame}
         />
-        <AIPane hint={currentHint} />
+        <AIPane hint={currentHint} restarted={newGame} />
       </section>
     </div>
   );
