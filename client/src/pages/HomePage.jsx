@@ -40,7 +40,7 @@ export default function HomePage() {
           your misadventure ;)
         </Typography>
         <button id="start-button" onClick={createGame}>
-          <a href="/story/{}">Start a new game</a>
+          <a href="/story">Start a new game</a>
         </button>
       </div>
     </div>

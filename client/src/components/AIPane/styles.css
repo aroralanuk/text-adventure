@@ -8,6 +8,7 @@
   text-align: right;
   width: fit-content;
   align-self: center;
+  display: inline-block;
 }
 
 #ai_img {
@@ -24,6 +25,7 @@ p.speech-bubble {
   border-radius: 1rem;
   line-height: normal;
   padding: 1rem;
+  margin: auto;
 }
 
 p.speech-bubble:before {
@@ -49,3 +51,28 @@ p.speech-bubble:before {
   right: 24px;
   bottom: -13px;
 } */
+
+#show-hint-button {
+  border: #aaa 2px solid;
+  background-color: black;
+  color: #aaa;
+  font-family: "KoHo", sans-serif;
+  margin: 0rem 0rem 2rem 0rem;
+  padding: 0.5rem 3rem 0.5rem 3rem;
+  text-transform: uppercase;
+  border-radius: 2rem;
+  display: inline-block;
+  font-size: 1.5rem;
+  height: auto;
+  font-weight: 500;
+}
+
+#show-hint-button p {
+  margin: 0px;
+}
+
+#show-hint-button:hover {
+  background-color: #aaa;
+  color: black !important;
+  cursor: pointer;
+}
