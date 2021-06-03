@@ -28,6 +28,29 @@ FEATURE_IDX = {
     "return_seat": 6,         #call attendant or settle in seat
 }
 FEATURES_SIZE = len(FEATURE_IDX)
+arrivalHint1 = "ARGHH I be starvin. Din Tai Fung sounds good, i wants t' go thar"
+arrivalHint2 = "ARGHH I be parched. Lets get some black brew at that there Starbucks"
+starbucksHint1 = "Don't let 'em take yer doubloons, a normal brew will do ye just fine"
+starbucksHint2 = "Those shots oughta kick yer hangover, worth yer doubloons"
+flightHint1 = "Kick yer feet up and gets t' restin, me eyes be heavy"
+flightHint2 = "Turn yer screen on, I wants t' watch th' movie"
+herHint1 = "ARGH screw yer brew, I wants t' see the end"
+herHint2 = "That there movie is puttin' me to sleep, get yer black brew to last us this ride"
+coffeeHint1 = "A pirate never turns down a fight, get yer booty in there!"
+coffeeHint2 = "This pirate doesn't fight with stomach issues, get back to yer seat"
+cockpitHint1 = "Mutiny! Help yer Captain and make the scallywag walk the plank"
+cockpitHint2 = "Mutiny! Help yer crew and take down the rotten Captain of the ship"
+seatHint1 = "Get some help for yer captain, call the attendant"
+seatHint2 = "Not our fight, get yer rest and settle down"
+HINTS = {
+    "airport_arrival": (arrivalHint1, arrivalHint2),
+    "starbucks": (starbucksHint1, starbucksHint2),
+    "board_flight": (flightHint1, flightHint2),
+    "watch_her": (herHint1, herHint2),
+    "get_coffee": (coffeeHint1, coffeeHint2),
+    "walk_into_cockpit": (cockpitHint1, cockpitHint2),
+    "return_seat": (seatHint1, seatHint2),
+}
 
 def metrics(y_true, y_pred):
     print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
@@ -46,10 +69,10 @@ def getPrediction(currentChoicesDict, currentScene, model):
 
     #get the prediction for choice 0
     currentChoices[FEATURE_IDX[currentScene]] = 0
-    returnDict["0"] = model.predict_proba(currentChoices.reshape(1, -1))[0]
+    returnDict["0"] = (model.predict_proba(currentChoices.reshape(1, -1))[0], HINTS[currentScene][0])
     #get the prediction for choice 1
     currentChoices[FEATURE_IDX[currentScene]] = 1
-    returnDict["1"] = model.predict_proba(currentChoices.reshape(1, -1))[0]
+    returnDict["1"] = (model.predict_proba(currentChoices.reshape(1, -1))[0], HINTS[currentScene][1])
     return returnDict
 
 def trainNewModel():
