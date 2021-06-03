@@ -4,9 +4,10 @@
   flex-direction: column-reverse;
 }
 
-.right-section-content {
+.ghost-of-napoleon {
   text-align: right;
   width: fit-content;
+  height: 50%;
   align-self: center;
   display: inline-block;
 }
@@ -75,4 +76,14 @@ p.speech-bubble:before {
   background-color: #aaa;
   color: black !important;
   cursor: pointer;
+}
+
+.radial-gauges {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.mood-gauge {
+  margin: 0;
 }

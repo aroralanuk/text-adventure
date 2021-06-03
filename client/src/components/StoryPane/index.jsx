@@ -19,12 +19,12 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
   const storyHistory = story.map((para, index) => {
     if (index == story.length - 1) {
       return (
-        <p>
+        <p key={para}>
           <Typist>{para}</Typist>
         </p>
       );
     } else {
-      return <p>{para}</p>;
+      return <p key={para}>{para}</p>;
     }
   });
 
