@@ -115,7 +115,6 @@ class Story(object):
             return -1
 
     def isValidChoice(self,choice):
-        # print(self.path)
         if not self.path and self.isGameOver() != -1:
             return False
         curr = self.graph_dict[self.path[-1]]

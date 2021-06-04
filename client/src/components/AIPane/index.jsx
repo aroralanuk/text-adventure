@@ -3,7 +3,7 @@ import MetricGauge from "../MetricGauge/index";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
-export default function AIPane({ hint, restarted, currSurvival }) {
+export default function AIPane({ hint, restarted, currSurvival, hintTaken }) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
 
@@ -25,11 +25,14 @@ export default function AIPane({ hint, restarted, currSurvival }) {
 
   const toggleHint = async (e) => {
     e.preventDefault();
+
     if (visibleHint) {
       setVisibleHint(false);
     } else if (hintsLeft > 0) {
       setVisibleHint(true);
-      if (hint) {
+      if (hint && hint.length != 0) {
+        console.log("hint got: " + hint);
+        hintTaken();
         setHintsLeft(hintsLeft - 1);
       }
     }

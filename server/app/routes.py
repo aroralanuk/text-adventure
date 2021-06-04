@@ -21,6 +21,7 @@ def safeIndex(lsd, e, start=0, end=-1):
         end = len(lsd)
     return lsd.index(e, start, end) if e in lsd[start:end] else -1
 
+# helper method for find the lasst occurrence of the element e
 def lastSafeIndex(lsd, e):
     lst = copy.deepcopy(lsd)
     lst.reverse()
@@ -30,6 +31,7 @@ def lastSafeIndex(lsd, e):
 
 # firestore collection
 games_collection = db.collection('game_played')
+hints_taken = db.collection('hints_taken')
 
 @app.route('/')
 @app.route('/api')
@@ -59,9 +61,6 @@ def create_game():
 
     # storing path so far
     dataset['path'] = [ele.dictify() for ele in plane_crash.getPath()]
-
-
-
 
     payload = { 
         'game_id' : game_id.hex, 
@@ -98,6 +97,26 @@ def game_update(game_id):
             if game_status.get(current_scene.title,None):
                 game_status[current_scene.title] = choice_index
             game_doc.update(game_status)
+
+            hint_selection = hints_taken.where('choice', '==', current_scene.title).stream()
+            hint_id = ""
+            hint_dict = {}
+            for doc in hint_selection:
+                # print(f'{doc.id} => {doc.to_dict()}')
+                hint_id, hint_dict = doc.id, doc.to_dict()
+
+            print(data)
+            if hint_dict:
+                if data['hint_taken']:
+                    hint_dict['taken'] = hint_dict['taken'] + 1
+                elif data['hint_agreed_with'] and not data['hint_taken']:
+                    return make_response("ERROR: something goofy is happening with hint selection", 500)
+                if data['hint_agreed_with']:
+                        hint_dict['agreed_with'] = hint_dict['agreed_with'] + 1
+
+                print(hint_dict)
+                hints_taken.document(hint_id).update(hint_dict)
+
             return make_response("SUCCESS: game updated", 200)
         else:
             return make_response("ERROR: invalid choice", 403)
@@ -136,7 +155,6 @@ def get_update(game_id):
         else:
             nextChoices = [(dead_or_alive, ref_dict[dead_or_alive])]
             game_status['dead_or_alive'] = dead_or_alive
-            print(game_status)
             game_doc.update(game_status)
 
         non_features = ['game_id','dead_or_alive','path']
