@@ -45,6 +45,14 @@ class Story(object):
         if len(self.path) != 0:
             return self.path[-1].title
 
+    def getLastChoiceTitle(self):
+        path_len = len(self.path)
+        if path_len != 0:
+            for i in range(path_len,0):
+                print(self.path[i])
+                if len(self.graph_dict[self.path[i]]) > 1:
+                    return self.path[i].title
+
     def getChoices(self, current_scene):
         for keys in self.graph_dict:
             if keys.title == current_scene.title:

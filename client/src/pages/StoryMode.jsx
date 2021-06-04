@@ -10,18 +10,21 @@ const StoryMode = () => {
   const [choice, setChoice] = useState([]);
   const [status, setStatus] = useState(false);
   const [currentHint, setCurrentHint] = useState("No hints here");
+  const [survival, setSurvival] = useState(0);
   const [newGame, setNewGame] = useState(true);
   const history = useHistory();
   const game_id = history.location.state.game_id;
 
   useEffect(() => {
     API.getGameUpdate(game_id).then((response) => {
-      const { choices, story_so_far, hint } = response.data;
+      const { choices, story_so_far, hint, survival_chance } = response.data;
       setStory(story_so_far);
       setChoice(choices);
       setCurrentHint(hint[0]);
       setNewGame(false);
-      console.log(hint);
+      if (survival_chance >= 0 && survival_chance <= 1.1)
+        setSurvival(Math.round(survival_chance * 100));
+      console.log(survival_chance);
     });
   }, [status]);
 
@@ -60,7 +63,11 @@ const StoryMode = () => {
           choiceSelected={choiceSelected}
           restartGame={restartGame}
         />
-        <AIPane hint={currentHint} restarted={newGame} />
+        <AIPane
+          hint={currentHint}
+          restarted={newGame}
+          currSurvival={survival}
+        />
       </section>
     </div>
   );

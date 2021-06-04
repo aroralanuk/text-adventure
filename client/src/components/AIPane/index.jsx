@@ -3,7 +3,7 @@ import MetricGauge from "../MetricGauge/index";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
-export default function AIPane({ hint, restarted }) {
+export default function AIPane({ hint, restarted, currSurvival }) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
 
@@ -15,7 +15,7 @@ export default function AIPane({ hint, restarted }) {
   }, [hint, restarted]);
 
   const giveHint = () => {
-    console.log(hint);
+    console.log(hint[0]);
     if (hint) {
       return "'" + hint + "' be yer best choice here.";
     } else {
@@ -38,7 +38,7 @@ export default function AIPane({ hint, restarted }) {
   return (
     <section className="right-section">
       <div className="ghost-of-napoleon">
-        {visibleHint ? (
+        {0 && visibleHint ? (
           <p className="speech-bubble">{giveHint()}</p>
         ) : (
           <p className="speech-bubble">
@@ -51,7 +51,6 @@ export default function AIPane({ hint, restarted }) {
         </button>
         <img src={ghost_of_napoleon} alt="Ghost of Napoleon" id="ai_img" />
       </div>
-
       <div className="mood-gauge">
         <MetricGauge
           key="linearGauge"
@@ -68,7 +67,7 @@ export default function AIPane({ hint, restarted }) {
           gaugeType="RADIAL"
           width={200}
           height={200}
-          value={10}
+          value={currSurvival}
           title="SURVIVAL"
         />
         <MetricGauge

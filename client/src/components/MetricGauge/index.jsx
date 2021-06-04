@@ -120,7 +120,7 @@ class ReactCanvasGauge extends React.Component {
 
   componentWillReceiveProps(props) {
     if (this.gauge) {
-      console.log(props.value);
+      // console.log(props.value);
       this.gauge.update({ value: props.value });
     }
   }

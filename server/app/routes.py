@@ -1,6 +1,7 @@
 from . import app
 import uuid
 import json
+import copy
 from flask import Flask, make_response, jsonify, request
 from app.initFirestore import db
 
@@ -13,6 +14,19 @@ plane_crash = Story()
 plane_crash.serialize_story(mh370_crash)
 
 model = data.trainNewModel()
+
+# helper method for .index method
+def safeIndex(lsd, e, start=0, end=-1):
+    if end==-1:
+        end = len(lsd)
+    return lsd.index(e, start, end) if e in lsd[start:end] else -1
+
+def lastSafeIndex(lsd, e):
+    lst = copy.deepcopy(lsd)
+    lst.reverse()
+    index = safeIndex(lst,e)
+    # print(f"rev. index: {index}")
+    return (len(lst) - index - 1) if index != -1 else -1
 
 # firestore collection
 games_collection = db.collection('game_played')
@@ -129,22 +143,53 @@ def get_update(game_id):
         features_set = game_status
         for nf in non_features:
             features_set.pop(nf)
-        print(features_set)
+        # print(features_set)
+
+        survival_chance = 0.0
+
+        # getting survival current chance 
+        current_status = data.getChoiceVector(features_set)
+        print(current_status)
+        lastChoiceIndex = max(lastSafeIndex(current_status,0),lastSafeIndex(current_status,1))
+        # print(f"dead:{dead_or_alive}")
+        # print(f"last found: {lastChoiceIndex}")
+
+        if lastChoiceIndex != -1:
+            if dead_or_alive != -1:
+                survival_chance = dead_or_alive
+            else:
+                last_choice = current_status[lastChoiceIndex]
+                current_status[lastChoiceIndex] = -1
+                last_choice_title = 'airport_arrival'
+
+                for k,v in data.FEATURE_IDX.items():
+                    if v == lastChoiceIndex:
+                        last_choice_title = k
+
+                last_prediction = data.getPrediction(current_status, last_choice_title, model)
+                # print(last_prediction)
+
+                survival_chance = last_prediction[str(last_choice)][0][1]
+
+        print(f"Survival: {survival_chance}")
 
         bestOption = ()
         if len(nextChoices) > 1:
-            prediction_vector = data.getPrediction(features_set, current_title, model)
-            print(prediction_vector)
+            features_vector = data.getChoiceVector(features_set)
+            prediction_vector = data.getPrediction(features_vector, current_title, model)
+            # print(prediction_vector)
             bestOptionIndex = int(max(prediction_vector.items(),key=lambda x : x[1][1])[0])
             bestOption = nextChoices[bestOptionIndex]
-            print(bestOption)
+            # print(bestOption)
 
         payload = { 
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
             'choices': nextChoices,
             'hint': bestOption,
+            'survival_chance': survival_chance
         }
+
 
         return make_response(payload, 200)
 
