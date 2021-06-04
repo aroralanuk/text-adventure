@@ -21,7 +21,8 @@ from app.initFirestore import db
 
 import pandas as pd
 
-df = pd.read_csv('hints.csv')
+urlfile = "https://raw.githubusercontent.com/aroralanuk/text-adventure/main/server/Language/hints.csv"
+df = pd.read_csv(urlfile)
 
 FEATURE_IDX = {
     "airport_arrival": 0,     #DTF or Starbucks
