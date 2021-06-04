@@ -58,7 +58,6 @@ const StoryMode = () => {
     if (hintTaken && e.target.value === hintTitle) {
       delightGhost();
     } else if (hintTaken) {
-      console.log("why hint taken");
       upsetGhost();
     }
 

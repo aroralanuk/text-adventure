@@ -3,6 +3,7 @@ import uuid
 import json
 import copy
 import random
+import math
 from flask import Flask, make_response, jsonify, request
 from app.initFirestore import db
 
@@ -201,18 +202,24 @@ def get_update(game_id):
         best_option = -1
         trust = 0.0
 
+        model_hint = "sorry bois, no hint"
+        
         if len(nextChoices) > 1:
             features_vector = data.getChoiceVector(features_set)
             prediction_vector = data.getPrediction(features_vector, current_title, model)
             print(prediction_vector)
 
-            best_chance = 0.0
+            best_chance = -1
             for k, v in prediction_vector.items():
                 if v[0][1] > best_chance:
                     best_chance = v[0][1]
                     best_option = int(k)
             
-            best_option = flipBiased(best_option,0.42**game_status['mood'])
+            model_hint = prediction_vector[str(best_option)][1]
+            if best_option != -1:
+                best_option = flipBiased(best_option,0.02**(math.pow(game_status['mood'],2)))
+                # print(0.02**(math.pow(game_status['mood'],2)))
+
 
             # get hints data from firestore for trust %
             hint_selection = hints_taken.where('choice', '==', current_title).stream()
@@ -232,7 +239,7 @@ def get_update(game_id):
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
             'choices': nextChoices,
-            'hint': nextChoices[best_option],
+            'hint': model_hint,
             'survival_chance': survival_chance,
             'trust': trust,
             'mood': game_status['mood']
