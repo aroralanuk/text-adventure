@@ -14,9 +14,11 @@ flask-cors = "*"
 firebase_admin = "*"
 uuid = "*"
 gunicorn = "*"
+pandas = "*"
+sklearn = "*"
 
 [scripts]
 server = "flask run"
 
 [requires]
-python_version = "3"
+python_version = "3.8"
