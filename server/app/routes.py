@@ -105,7 +105,6 @@ def game_update(game_id):
                 # print(f'{doc.id} => {doc.to_dict()}')
                 hint_id, hint_dict = doc.id, doc.to_dict()
 
-            print(data)
             if hint_dict:
                 if data['hint_taken']:
                     hint_dict['taken'] = hint_dict['taken'] + 1
@@ -192,6 +191,8 @@ def get_update(game_id):
         print(f"Survival: {survival_chance}")
 
         bestOption = ()
+        trust = 0.0
+
         if len(nextChoices) > 1:
             features_vector = data.getChoiceVector(features_set)
             prediction_vector = data.getPrediction(features_vector, current_title, model)
@@ -200,12 +201,26 @@ def get_update(game_id):
             bestOption = nextChoices[bestOptionIndex]
             # print(bestOption)
 
+            hint_selection = hints_taken.where('choice', '==', current_title).stream()
+            hint_id = ""
+            hint_dict = {}
+            for doc in hint_selection:
+                # print(f'{doc.id} => {doc.to_dict()}')
+                hint_id, hint_dict = doc.id, doc.to_dict()
+
+            
+            if hint_dict:
+                trust = hint_dict['agreed_with'] / hint_dict['taken']
+            
+        print(f"trust: {trust}")
+
         payload = { 
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
             'choices': nextChoices,
             'hint': bestOption,
-            'survival_chance': survival_chance
+            'survival_chance': survival_chance,
+            'trust': trust
         }
 
 

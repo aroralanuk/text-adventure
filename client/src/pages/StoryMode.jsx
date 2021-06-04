@@ -11,6 +11,7 @@ const StoryMode = () => {
   const [status, setStatus] = useState(false);
   const [currentHint, setCurrentHint] = useState("no_hint_api");
   const [survival, setSurvival] = useState(0);
+  const [currTrust, setCurrTrust] = useState(0);
   const [newGame, setNewGame] = useState(true);
   const [hintTaken, setHintTaken] = useState(false);
 
@@ -19,13 +20,17 @@ const StoryMode = () => {
 
   useEffect(() => {
     API.getGameUpdate(game_id).then((response) => {
-      const { choices, story_so_far, hint, survival_chance } = response.data;
+      const { choices, story_so_far, hint, survival_chance, trust } =
+        response.data;
       setStory(story_so_far);
       setChoice(choices);
       setCurrentHint(hint);
       setNewGame(false);
+
       if (survival_chance >= 0 && survival_chance <= 1.1)
         setSurvival(Math.round(survival_chance * 100));
+      if (trust >= 0 && trust <= 1.1) setCurrTrust(Math.round(trust * 100));
+
       setHintTaken(false);
       // console.log(survival_chance);
     });
@@ -94,6 +99,7 @@ const StoryMode = () => {
           restarted={newGame}
           currSurvival={survival}
           hintTaken={updateHintTaken}
+          trust={currTrust}
         />
       </section>
     </div>

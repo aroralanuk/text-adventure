@@ -3,7 +3,13 @@ import MetricGauge from "../MetricGauge/index";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
-export default function AIPane({ hint, restarted, currSurvival, hintTaken }) {
+export default function AIPane({
+  hint,
+  restarted,
+  currSurvival,
+  hintTaken,
+  trust,
+}) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
 
@@ -66,7 +72,7 @@ export default function AIPane({ hint, restarted, currSurvival, hintTaken }) {
       </div>
       <div className="radial-gauges">
         <MetricGauge
-          key="radialGauge1"
+          key="accuracyGauge"
           gaugeType="RADIAL"
           width={200}
           height={200}
@@ -74,11 +80,11 @@ export default function AIPane({ hint, restarted, currSurvival, hintTaken }) {
           title="SURVIVAL"
         />
         <MetricGauge
-          key="radialGauge2"
+          key="trustGauge"
           gaugeType="RADIAL"
           width={200}
           height={200}
-          value={60}
+          value={trust}
           title="TRUSTWORTHINESS"
         />
       </div>
