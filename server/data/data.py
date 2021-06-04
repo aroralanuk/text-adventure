@@ -21,7 +21,7 @@ from app.initFirestore import db
 
 import pandas as pd
 
-df = pd.read_csv('language/hints.csv')
+df = pd.read_csv('/server/language/hints.csv')
 
 FEATURE_IDX = {
     "airport_arrival": 0,     #DTF or Starbucks
