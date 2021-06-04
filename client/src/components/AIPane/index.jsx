@@ -22,9 +22,8 @@ export default function AIPane({
   }, [hint, restarted]);
 
   const giveHint = () => {
-    console.log(hint[0]);
-    if (hint) {
-      return "'" + hint + "' be yer best choice here.";
+    if (hint.length) {
+      return hint;
     } else {
       return "Free will be a figment o' our imagination, init?";
     }
@@ -38,7 +37,7 @@ export default function AIPane({
     } else if (hintsLeft > 0) {
       setVisibleHint(true);
       if (hint && hint.length != 0) {
-        console.log("hint got: " + hint);
+        console.log(hint);
         hintTaken();
         setHintsLeft(hintsLeft - 1);
       }
@@ -48,7 +47,7 @@ export default function AIPane({
   return (
     <section className="right-section">
       <div className="ghost-of-napoleon">
-        {0 && visibleHint ? (
+        {visibleHint ? (
           <p className="speech-bubble">{giveHint()}</p>
         ) : (
           <p className="speech-bubble">
