@@ -2,6 +2,7 @@ from . import app
 import uuid
 import json
 import copy
+import random
 from flask import Flask, make_response, jsonify, request
 from app.initFirestore import db
 
@@ -28,6 +29,9 @@ def lastSafeIndex(lsd, e):
     index = safeIndex(lst,e)
     # print(f"rev. index: {index}")
     return (len(lst) - index - 1) if index != -1 else -1
+
+def flipBiased(index, p):
+    return index if random.random() < p else 1-index
 
 # firestore collection
 games_collection = db.collection('game_played')
@@ -61,6 +65,7 @@ def create_game():
 
     # storing path so far
     dataset['path'] = [ele.dictify() for ele in plane_crash.getPath()]
+    dataset['mood'] = 0.33
 
     payload = { 
         'game_id' : game_id.hex, 
@@ -96,6 +101,7 @@ def game_update(game_id):
             game_status['path'] = [ele.dictify() for ele in plane_crash.getPath()]
             if game_status.get(current_scene.title,None):
                 game_status[current_scene.title] = choice_index
+            game_status['mood'] = data['mood']
             game_doc.update(game_status)
 
             hint_selection = hints_taken.where('choice', '==', current_scene.title).stream()
@@ -115,6 +121,8 @@ def game_update(game_id):
 
                 print(hint_dict)
                 hints_taken.document(hint_id).update(hint_dict)
+
+            print(data)
 
             return make_response("SUCCESS: game updated", 200)
         else:
@@ -156,8 +164,8 @@ def get_update(game_id):
             game_status['dead_or_alive'] = dead_or_alive
             game_doc.update(game_status)
 
-        non_features = ['game_id','dead_or_alive','path']
-        features_set = game_status
+        non_features = ['game_id','dead_or_alive','path','mood']
+        features_set = copy.deepcopy(game_status)
         for nf in non_features:
             features_set.pop(nf)
         # print(features_set)
@@ -190,17 +198,23 @@ def get_update(game_id):
 
         print(f"Survival: {survival_chance}")
 
-        bestOption = ()
+        best_option = -1
         trust = 0.0
 
         if len(nextChoices) > 1:
             features_vector = data.getChoiceVector(features_set)
             prediction_vector = data.getPrediction(features_vector, current_title, model)
-            # print(prediction_vector)
-            bestOptionIndex = int(max(prediction_vector.items(),key=lambda x : x[1][1])[0])
-            bestOption = nextChoices[bestOptionIndex]
-            # print(bestOption)
+            print(prediction_vector)
 
+            best_chance = 0.0
+            for k, v in prediction_vector.items():
+                if v[0][1] > best_chance:
+                    best_chance = v[0][1]
+                    best_option = int(k)
+            
+            best_option = flipBiased(best_option,0.42**game_status['mood'])
+
+            # get hints data from firestore for trust %
             hint_selection = hints_taken.where('choice', '==', current_title).stream()
             hint_id = ""
             hint_dict = {}
@@ -218,10 +232,14 @@ def get_update(game_id):
             'game_id' : game_id, 
             'story_so_far': plane_crash.getStorySoFar(),
             'choices': nextChoices,
-            'hint': bestOption,
+            'hint': nextChoices[best_option],
             'survival_chance': survival_chance,
-            'trust': trust
+            'trust': trust,
+            'mood': game_status['mood']
         }
+
+        if best_option == -1:
+            payload['hint'] = []
 
 
         return make_response(payload, 200)

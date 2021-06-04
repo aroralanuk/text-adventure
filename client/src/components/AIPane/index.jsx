@@ -9,6 +9,7 @@ export default function AIPane({
   currSurvival,
   hintTaken,
   trust,
+  mood,
 }) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
@@ -66,7 +67,7 @@ export default function AIPane({
           gaugeType="LINEAR"
           width={75}
           height={200}
-          value={10}
+          value={mood}
           title="MOOD"
         />
       </div>
