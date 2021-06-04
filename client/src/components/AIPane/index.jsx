@@ -3,7 +3,14 @@ import MetricGauge from "../MetricGauge/index";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
-export default function AIPane({ hint, restarted }) {
+export default function AIPane({
+  hint,
+  restarted,
+  currSurvival,
+  hintTaken,
+  trust,
+  mood,
+}) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
 
@@ -15,7 +22,7 @@ export default function AIPane({ hint, restarted }) {
   }, [hint, restarted]);
 
   const giveHint = () => {
-    console.log(hint);
+    console.log(hint[0]);
     if (hint) {
       return "'" + hint + "' be yer best choice here.";
     } else {
@@ -25,11 +32,14 @@ export default function AIPane({ hint, restarted }) {
 
   const toggleHint = async (e) => {
     e.preventDefault();
+
     if (visibleHint) {
       setVisibleHint(false);
     } else if (hintsLeft > 0) {
       setVisibleHint(true);
-      if (hint) {
+      if (hint && hint.length != 0) {
+        console.log("hint got: " + hint);
+        hintTaken();
         setHintsLeft(hintsLeft - 1);
       }
     }
@@ -38,7 +48,7 @@ export default function AIPane({ hint, restarted }) {
   return (
     <section className="right-section">
       <div className="ghost-of-napoleon">
-        {visibleHint ? (
+        {0 && visibleHint ? (
           <p className="speech-bubble">{giveHint()}</p>
         ) : (
           <p className="speech-bubble">
@@ -51,32 +61,31 @@ export default function AIPane({ hint, restarted }) {
         </button>
         <img src={ghost_of_napoleon} alt="Ghost of Napoleon" id="ai_img" />
       </div>
-
       <div className="mood-gauge">
         <MetricGauge
           key="linearGauge"
           gaugeType="LINEAR"
           width={75}
           height={200}
-          value={10}
+          value={mood}
           title="MOOD"
         />
       </div>
       <div className="radial-gauges">
         <MetricGauge
-          key="radialGauge1"
+          key="accuracyGauge"
           gaugeType="RADIAL"
           width={200}
           height={200}
-          value={10}
+          value={currSurvival}
           title="SURVIVAL"
         />
         <MetricGauge
-          key="radialGauge2"
+          key="trustGauge"
           gaugeType="RADIAL"
           width={200}
           height={200}
-          value={60}
+          value={trust}
           title="TRUSTWORTHINESS"
         />
       </div>

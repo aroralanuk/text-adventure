@@ -76,14 +76,14 @@ def metrics(y_true, y_pred):
 def getChoiceVector(choiceDict):
     vector = [-1]*FEATURES_SIZE
     for choice in choiceDict.keys():
-        if FEATURE_IDX.get(choice, None):
+        if FEATURE_IDX.get(choice, None) != None:
             vector[FEATURE_IDX[choice]] = choiceDict[choice]
     return vector
 
-def getPrediction(currentChoicesDict, currentScene, model):
-    currentChoices = np.array(getChoiceVector(currentChoicesDict))
+def getPrediction(currentChoices, currentScene, model):
     returnDict = {}
 
+    currentChoices = np.array(currentChoices)
     #get the prediction for choice 0
     currentChoices[FEATURE_IDX[currentScene]] = 0
     returnDict["0"] = (model.predict_proba(currentChoices.reshape(1, -1))[0], HINTS[currentScene][0])
