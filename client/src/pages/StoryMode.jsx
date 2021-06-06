@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+import {
+  Checkbox,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  Menu,
+  Segment,
+  Sidebar,
+} from "semantic-ui-react";
+
 import NavBar from "../components/NavBar/index";
 import StoryPane from "../components/StoryPane/index";
 import AIPane from "../components/AIPane/index";
@@ -13,6 +25,7 @@ const StoryMode = () => {
   const [survival, setSurvival] = useState(0);
   const [currTrust, setCurrTrust] = useState(0);
   const [moody, setMoody] = useState(33);
+  const [visible, setVisible] = useState(false);
   let diffMood = moody;
   const [newGame, setNewGame] = useState(true);
   const [hintTaken, setHintTaken] = useState(false);
@@ -39,7 +52,7 @@ const StoryMode = () => {
       setHintTaken(false);
       console.log("reloading..");
     });
-  }, [status]);
+  }, [status, visible]);
 
   const choiceSelected = async (e) => {
     e.preventDefault();
@@ -110,26 +123,139 @@ const StoryMode = () => {
     }
   };
 
+  const updateVisible = () => {
+    setVisible(!visible);
+  };
+
   return (
-    <div className="main-page">
-      <NavBar />
-      <section className="main-section">
-        <StoryPane
-          story={story}
-          choice={choice}
-          choiceSelected={choiceSelected}
-          restartGame={restartGame}
-        />
-        <AIPane
-          hint={currentHint}
-          restarted={newGame}
-          currSurvival={survival}
-          hintTaken={updateHintTaken}
-          trust={currTrust}
-          mood={moody}
-        />
-      </section>
-    </div>
+    <Sidebar.Pushable as={Segment} style={{ border: "0px" }}>
+      <Sidebar.Pusher dimmed={visible}>
+        <Segment
+          basic
+          className="main-page"
+          style={{ backgroundColor: "black" }}
+        >
+          <NavBar updateVisible={updateVisible} />
+          <section className="main-section">
+            <StoryPane
+              story={story}
+              choice={choice}
+              choiceSelected={choiceSelected}
+              restartGame={restartGame}
+            />
+            <AIPane
+              hint={currentHint}
+              restarted={newGame}
+              currSurvival={survival}
+              hintTaken={updateHintTaken}
+              trust={currTrust}
+              mood={moody}
+            />
+          </section>
+        </Segment>
+      </Sidebar.Pusher>
+
+      <Sidebar
+        as={Menu}
+        animation="overlay"
+        icon="labeled"
+        inverted
+        direction="right"
+        onHide={() => setVisible(false)}
+        vertical
+        visible={visible}
+        width="thin"
+        style={{ width: "30vw" }}
+      >
+        <Menu.Item as="a" style={{ margin: "2rem" }}>
+          <Header
+            as="h3"
+            style={{ color: "white", margin: "1.5rem", fontSize: "2rem" }}
+          >
+            About this project
+          </Header>
+          <Header.Subheader
+            style={{ color: "#aaa", fontSize: "1.2rem", lineHeight: "1.5rem" }}
+          >
+            We made this AI-guided text-adventure game as our final project for{" "}
+            <a
+              href="https://kristenvaccaro.github.io/human-ai/"
+              style={{ color: "#3f0" }}
+            >
+              CSE 190{" "}
+            </a>
+            at UC San Diego focusing on recommender systems, transparency, and
+            explainability in the context of human-AI interactions. More details
+            can be found in the{" "}
+            <a
+              href="https://github.com/aroralanuk/text-adventure"
+              style={{ color: "#3f0" }}
+            >
+              github repo.
+            </a>
+          </Header.Subheader>
+          <br /> <br /> <br />
+        </Menu.Item>
+        <Menu.Item as="a" style={{ margin: "2rem" }}>
+          <Header
+            as="h3"
+            style={{ color: "white", margin: "1.5rem", fontSize: "2rem" }}
+          >
+            About us
+          </Header>
+          <Header.Subheader
+            style={{
+              color: "#aaa",
+              fontSize: "1.2rem",
+              lineHeight: "1.5rem",
+            }}
+          >
+            Find us on these platforms:
+            <br /> <br />
+            Kunal Arora{"  "}
+            <a
+              href="https://github.com/aroralanuk"
+              style={{ color: "#3f0", marginLeft: "0.5rem" }}
+            >
+              <Icon name="github" />
+            </a>
+            <a
+              href="mailto:crazentonkunalizar@gmail.com"
+              style={{ color: "#3f0" }}
+            >
+              <Icon name="mail" />
+            </a>
+            <a href="https://twitter.com/arorAlanuK" style={{ color: "#3f0" }}>
+              <Icon name="twitter" />
+            </a>
+            <br />
+            McKinley Souder
+            <a
+              href="https://github.com/mckinleysouder"
+              style={{ color: "#3f0", marginLeft: "0.5rem" }}
+            >
+              <Icon name="github" />
+            </a>
+            <a href="mailto:msouder@ucsd.edu" style={{ color: "#3f0" }}>
+              <Icon name="mail" />
+            </a>
+            <br />
+            Faith DiSandro
+            <a
+              href="https://github.com/faith0disandro"
+              style={{ color: "#3f0", marginLeft: "0.5rem" }}
+            >
+              <Icon name="github" />
+            </a>
+            <a href="mailto:fdisandr@ucsd.edu" style={{ color: "#3f0" }}>
+              <Icon name="mail" />
+            </a>
+            <br />
+          </Header.Subheader>
+          <br /> <br /> <br />
+        </Menu.Item>
+      </Sidebar>
+    </Sidebar.Pushable>
   );
 };
 
