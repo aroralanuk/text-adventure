@@ -57,3 +57,11 @@ button:hover {
   flex-direction: row;
   /* height: 100%; */
 }
+
+.sidebar-item {
+  margin: 2rem;
+}
+
+.sidebar-header {
+  margin-bottom: 1rem;
+}

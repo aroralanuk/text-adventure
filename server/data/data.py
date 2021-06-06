@@ -65,7 +65,7 @@ HINTS = {
 # generating
 indexy = 0
 for k,v in FEATURE_IDX.items():
-    pref_index = round(random.random() * 100)
+    pref_index = round(random.random() * 20)
     HINTS[k] = (df.loc[indexy*100 + pref_index,'hint'],df.loc[indexy*100 + pref_index + 100,'hint'])
     indexy = indexy + 2
 

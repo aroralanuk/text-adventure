@@ -1,20 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Typist from "react-typist";
 import "./styles.css";
 
 const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
   const scrollRef = useRef();
   const [scroll, setScroll] = useState(0);
-
-  // const line = (para) => {
-  //   return (
-  //     <div>
-  //       {text.split("\n").map((i, key) => {
-  //         return <div key={key}>{i}</div>;
-  //       })}
-  //     </div>
-  //   );
-  // }
 
   const storyHistory = story.map((para, index) => {
     if (index == story.length - 1) {
@@ -27,14 +17,6 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
       return <p key={para}>{para}</p>;
     }
   });
-
-  // const handleKeyPress = (e) => {
-  //   //it triggers by pressing the enter key
-  //   console.log(validKeyPress);
-  //   if (e.keyCode === 13) {
-  //     console.log("works");
-  //   }
-  // };
 
   const restartGameButton = (label) => {
     let msg = "";
@@ -49,8 +31,8 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
     }
 
     return (
-      <div className="game-over-outer">
-        <div className="game-over-inner">
+      <div className="game-over-outer" key="game-over-outer">
+        <div className="game-over-inner" key="game-over-inner">
           <p>{msg}</p>
           <button
             className="choice-button"
