@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const server = "http://localhost:5000";
+const server = "https://plane-crash-text-adventure.herokuapp.com";
 
 const API = {
   createGame: function () {
