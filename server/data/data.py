@@ -120,7 +120,6 @@ def trainNewModel():
     features = expanded_df[chosen_features]
     labels = expanded_df['dead_or_alive']
     model = RandomForestClassifier().fit(features, labels)
-    print(pd)
     return model
 
 # model = trainNewModel()
