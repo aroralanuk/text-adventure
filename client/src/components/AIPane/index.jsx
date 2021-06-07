@@ -41,8 +41,8 @@ export default function AIPane({
   }, [hint, restarted]);
 
   const giveHint = () => {
-    if (hint.length) {
-      return hint;
+    if (hint.hint) {
+      return hint.hint;
     } else {
       return "Free will be a figment o' our imagination, init?";
     }
@@ -55,7 +55,6 @@ export default function AIPane({
     } else if (hintsLeft > 0) {
       setVisibleHint(true);
       if (hint && hint.length != 0) {
-        console.log(hint);
         hintTaken();
         setHintsLeft(hintsLeft - 1);
       }

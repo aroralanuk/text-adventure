@@ -215,11 +215,16 @@ def get_update(game_id):
                     best_chance = v[0][1]
                     best_option = int(k)
             
-            model_hint = prediction_vector[str(best_option)][1]
+            
             if best_option != -1:
                 best_option = flipBiased(best_option,0.02**(math.pow(game_status['mood'],2)))
-                # print(0.02**(math.pow(game_status['mood'],2)))
 
+            if best_option == 0 or best_option == 1:
+                model_hint = {}
+                model_hint['choice'] = nextChoices[best_option][1]['title']
+                model_hint['hint'] = prediction_vector[str(best_option)][1]
+
+            # print(model_hint)
 
             # get hints data from firestore for trust %
             hint_selection = hints_taken.where('choice', '==', current_title).stream()

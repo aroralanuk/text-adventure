@@ -40,6 +40,7 @@ const StoryMode = () => {
       setStory(story_so_far);
       setChoice(choices);
       setCurrentHint(hint);
+
       setNewGame(false);
 
       if (survival_chance >= 0 && survival_chance <= 1.1)
@@ -50,7 +51,6 @@ const StoryMode = () => {
         setMoody(diffMood);
       }
       setHintTaken(false);
-      console.log("reloading..");
     });
   }, [status, visible]);
 
@@ -63,8 +63,8 @@ const StoryMode = () => {
     let body = { choice_made: e.target.value };
 
     // getting hint title if a hint is provided
-    if (currentHint.length && typeof currentHint[1] == "object") {
-      hintTitle = currentHint[1].title;
+    if (typeof currentHint == "object" && currentHint.choice) {
+      hintTitle = currentHint.choice;
     }
 
     // checking if the user agreed with the hint
