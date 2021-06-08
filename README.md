@@ -9,12 +9,12 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![Contributors][contributors-shield]][contributors-url]
+<!-- [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 <!-- PROJECT LOGO -->
 <br />
@@ -53,12 +53,12 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <!-- <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li> -->
   </ol>
 </details>
 
@@ -66,45 +66,43 @@
 
 ## About The Project
 
-![Product Name Screen Shot](assets/playthrough.gif)
+![Playthrough of the game](assets/playthrough.gif)
 
-<!-- There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+As a person who just got started with gaming recently, I've struggled with the steep learning curve in quite a few games. Tutorials are a great starting point but usually prove to be inadequate for assisting gamers during gameplay. Our solution is to make an intelligent agent which learns from past successful playthroughs and guides you whenever you're stuck. We chose a 'choose your own adventure' format as it's the simplest variation and interface to tackle without compromising the storyline or the degree of guidance to the user. While providing you recommendations, we also display additional metrics to set reasonable expectations for the AI agent. This app is built as a final project for [CSE 190: Human-AI Interactions](https://kristenvaccaro.github.io/human-ai/) class under Professor Kristen Vaccaro.
 
-Here's why:
+Prominent features of the game:
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should element DRY principles to the rest of your life :smile:
+- a 'choose your own adventure' (CYOA) game loosely based on the infamous flight [MH370](https://en.wikipedia.org/wiki/Malaysia_Airlines_Flight_370) which mysteriously disappear in the Indian Ocean. We store the binary choices made as `0`,`1` or `-1` as left, right, or not made yet for every fork.
+- an AI agent in the form of the 'ghost of napoleon' avatar built using random decision forest trained on a vector representation of various choices made in the direct acyclic graph which forms the storyline, for eg., `[0,-1,1,0,1,-1,-1]`. The hints given are the output of the [sentence similarity model](https://medium.com/spark-nlp/easy-sentence-similarity-with-bert-sentence-embeddings-using-john-snow-labs-nlu-ea078deb6ebf) trained on a dataset of [movie lines](https://www.kaggle.com/Cornell-University/movie-dialog-corpus) using BERT, Electra, and Universal Sentence Encoder Embeddings simultaneously.
+- metrics accompanying each recommendation from the ghost like your chance of survival currently as predicted by the ghost, trustworthiness placed in the ghost's hints by the users before you and the ghost's current mood which impacts his sincerity in providing you the proper hints.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have have contributed to expanding this template!
+Using the above hints given by the ghost and the information from the survival, trusworthiness, and mood gauges, you use your judgement and pick the best option at each step to survive the flight.
 
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+NB - every time you start the live demo, it'll take a little while to retrain the model and then load the game. After that, the game will run seamlessly even on restarting it.
 
 ### Built With
 
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-- [Bootstrap](https://getbootstrap.com)
-- [JQuery](https://jquery.com)
-- [Laravel](https://laravel.com)
+- [Jupyter Notebook](https://jupyter.org/)
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+- [React](https://reactjs.org/)
 
 <!-- GETTING STARTED -->
 
-<!-- ## Getting Started
+## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps. -->
+To get a local copy up and running follow these simple example steps.
 
-<!-- ### Prerequisites
+### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+1. Python 3 and pip - [instructions](https://www.python.org/downloads/)
+2. pipenv - [instructions](https://pypi.org/project/pipenv/)
+3. Node and npm - [instructions](https://nodejs.org/en/)
 
 ### Installation
+
+Both the server and the client directories has their own README, make sure to read those to get acquainted with the code and set it up locally.
+
+<!-- ### Installation
 
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo

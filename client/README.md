@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# Text adventure UI
+
+This is the frontend app for the text adventure project.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Below you will find the relevant README for Create React App. It contains the commands run in create-react-app
+to build or test the project.
 
 ## Available Scripts
 
