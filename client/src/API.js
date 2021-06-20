@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// PRODUCTION server link
 const server = "https://plane-crash-text-adventure.herokuapp.com";
 // const server = "http://localhost:5000";
 

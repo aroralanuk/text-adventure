@@ -31,6 +31,7 @@ def lastSafeIndex(lsd, e):
     # print(f"rev. index: {index}")
     return (len(lst) - index - 1) if index != -1 else -1
 
+# flipping p biased coin for the hint generation
 def flipBiased(index, p):
     return index if random.random() < p else 1-index
 
@@ -102,6 +103,8 @@ def game_update(game_id):
             game_status['path'] = [ele.dictify() for ele in plane_crash.getPath()]
             if game_status.get(current_scene.title,None):
                 game_status[current_scene.title] = choice_index
+            
+            # getting the ghost's mood
             game_status['mood'] = data['mood']
             game_doc.update(game_status)
 
@@ -112,6 +115,7 @@ def game_update(game_id):
                 # print(f'{doc.id} => {doc.to_dict()}')
                 hint_id, hint_dict = doc.id, doc.to_dict()
 
+            # metic for determining the mood
             if hint_dict:
                 if data['hint_taken']:
                     hint_dict['taken'] = hint_dict['taken'] + 1
@@ -120,16 +124,20 @@ def game_update(game_id):
                 if data['hint_agreed_with']:
                         hint_dict['agreed_with'] = hint_dict['agreed_with'] + 1
 
-                print(hint_dict)
+                # print(hint_dict)
                 hints_taken.document(hint_id).update(hint_dict)
 
-            print(data)
+            # print(data)
 
             return make_response("SUCCESS: game updated", 200)
         else:
             return make_response("ERROR: invalid choice", 403)
 
     return make_response("ERROR: can't load the game", 404)
+
+'''
+getting the updated game status after every choice made
+'''
 
 @app.route('/api/game/<string:game_id>', methods=['GET'])
 def get_update(game_id):
@@ -140,8 +148,6 @@ def get_update(game_id):
     # if such a game exists
     if game_ref.exists:
         game_status = game_ref.to_dict()
-
-        # print(game_status)
         
         # look for current path
         path = plane_crash.makePath(game_status['path'])
@@ -158,6 +164,8 @@ def get_update(game_id):
         current_title = plane_crash.getCurrentTitle()
         nextChoices = []
         ref_dict = { 0: "dead", 1: "alive"}
+
+        # checking if end of story reached
         if dead_or_alive == -1:
             nextChoices = [(choice[0],choice[1].dictify()) for choice in plane_crash.getCurrChoices()]
         else:
@@ -165,6 +173,7 @@ def get_update(game_id):
             game_status['dead_or_alive'] = dead_or_alive
             game_doc.update(game_status)
 
+        # copying vector for getting the survival chances
         non_features = ['game_id','dead_or_alive','path','mood']
         features_set = copy.deepcopy(game_status)
         for nf in non_features:
@@ -173,13 +182,11 @@ def get_update(game_id):
 
         survival_chance = 0.0
 
-        # getting survival current chance 
+        # getting survival current chance by getting the prediction for last choice made
         current_status = data.getChoiceVector(features_set)
-        print(current_status)
         lastChoiceIndex = max(lastSafeIndex(current_status,0),lastSafeIndex(current_status,1))
-        # print(f"dead:{dead_or_alive}")
-        # print(f"last found: {lastChoiceIndex}")
 
+        # getting last choice
         if lastChoiceIndex != -1:
             if dead_or_alive != -1:
                 survival_chance = dead_or_alive
@@ -197,19 +204,21 @@ def get_update(game_id):
 
                 survival_chance = last_prediction[str(last_choice)][0][1]
 
-        print(f"Survival: {survival_chance}")
+        # print(f"Survival: {survival_chance}")
 
         best_option = -1
         trust = 0.0
 
         model_hint = "sorry bois, no hint"
         
+        # getting the hint for the current scene
         if len(nextChoices) > 1:
             features_vector = data.getChoiceVector(features_set)
             prediction_vector = data.getPrediction(features_vector, current_title, model)
             print(prediction_vector)
 
             best_chance = -1
+            # relibilty based on the mood of the ghost
             for k, v in prediction_vector.items():
                 if v[0][1] > best_chance:
                     best_chance = v[0][1]
@@ -238,7 +247,7 @@ def get_update(game_id):
             if hint_dict:
                 trust = hint_dict['agreed_with'] / hint_dict['taken']
             
-        print(f"trust: {trust}")
+        # print(f"trust: {trust}")
 
         payload = { 
             'game_id' : game_id, 

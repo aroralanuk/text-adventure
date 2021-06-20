@@ -6,6 +6,7 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
   const scrollRef = useRef();
   const [scroll, setScroll] = useState(0);
 
+  // typist for slow typing
   const storyHistory = story.map((para, index) => {
     if (index == story.length - 1) {
       return (
@@ -64,6 +65,7 @@ const StoryPane = ({ choice, story, choiceSelected, restartGame }) => {
     }
   });
 
+  //enabling within the story display area
   const scrollAction = () => {
     const scollBottom = scrollRef.current.scrollTop;
     setScroll(scollBottom);

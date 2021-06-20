@@ -3,13 +3,15 @@ import React from "react";
 
 import "./styles.css";
 
+// quick and dirty version
+// TODO: make this functional and refactor it
 class ReactCanvasGauge extends React.Component {
   componentDidMount() {
     let options = { ...this.props, renderTo: this.canvasRef };
 
     switch (this.props.gaugeType) {
       case "LINEAR":
-        // options.update();
+        // settings for the linear mood gauge
         options = {
           ...this.props,
           renderTo: this.canvasRef,
@@ -60,6 +62,7 @@ class ReactCanvasGauge extends React.Component {
         break;
       case "RADIAL":
         options = {
+          // settings for the radial trust and survival gauge
           ...this.props,
           renderTo: this.canvasRef,
           minValue: 0,
@@ -106,12 +109,10 @@ class ReactCanvasGauge extends React.Component {
       default:
         break;
     }
-    // this.gauge = new RadialGauge(options).draw();
   }
 
   componentWillReceiveProps(props) {
     if (this.gauge) {
-      // console.log(props.value);
       this.gauge.update({ value: props.value });
     }
   }

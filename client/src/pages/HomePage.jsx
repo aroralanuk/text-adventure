@@ -8,6 +8,7 @@ import "./styles.css";
 export default function HomePage() {
   let history = useHistory();
 
+  // creating a new game from the home page
   const createGame = async (e) => {
     e.preventDefault();
     API.createGame().then((response) => {

@@ -2,23 +2,27 @@ import sys, os
 import time
 import random
 
+# scene class for each scene in the story
 class Scene(object):
     def __init__(self, title, desc):
         self.title = title
         self.desc = desc
 
+    # formatting for json frendliness
     def dictify(self):
         return {
             'title': self.title,
             'desc': self.desc
         }
 
+    # overwritting == method for ease of comparsion
     def __eq__(self, other):
         if type(other) is type(self):
             return self.title == other.title 
         else:
             return False
     
+    # scenes are unique
     def __hash__(self):
         return hash((self.title))
 
@@ -29,6 +33,8 @@ class Scene(object):
 
 
 
+# story as a graph of the scenes
+# self.path holding the list of scenes visited
 class Story(object):
     def __init__(self, graph_dict=None):
         if graph_dict == None:
@@ -45,6 +51,7 @@ class Story(object):
         if len(self.path) != 0:
             return self.path[-1].title
 
+    # for finding the last fork for the ML algorithm
     def getLastChoiceTitle(self):
         path_len = len(self.path)
         if path_len != 0:
@@ -59,18 +66,14 @@ class Story(object):
                 return self.graph_dict[keys]
         return []
 
-    # def getChoiceIndex(self, curr, choice):
-    #     if self.graph_dict.get(curr,False):
-    #         return self.graph_dict[curr]
-
     def getCurrChoices(self):
         if len(self.path) != 0:
             return self.getChoices(self.path[-1])
         else:
             raise RuntimeError('Can\'t get choices for null scene')
 
+    # add choices to the graph
     def addChoice(self, curr, choice):
-
         if self.graph_dict.get(curr, -1) == -1:
             raise ValueError('Out scene not found')
         else:
@@ -83,6 +86,7 @@ class Story(object):
     def getPath(self):
         return self.path
 
+    # storing choices made as an extension to the path
     def pushToPath(self, scene):
         if isinstance(scene, Scene):
             self.path.append(scene)
@@ -99,21 +103,22 @@ class Story(object):
             if key.title == scene_tag:
                 self.pushToPath(key)
 
-
+    # restoring Story object from the path provided
     def makePath(self,jsonPath):
         self.path = []
         for jsonScene in jsonPath:
             currScene = Scene(jsonScene['title'], jsonScene['desc'])
             self.pushToPath(currScene)
 
+    # return 0 for dead or 1 for alive if game over
     def isGameOver(self):
         choices = self.getCurrChoices()
-        # print(f"vfsvfsvsvdd:{choices}")
         if choices[0] == 1 or choices[0] == 0:
             return choices[0]
         else:
             return -1
 
+    # check for valid choice at the current scene
     def isValidChoice(self,choice):
         if not self.path and self.isGameOver() != -1:
             return False
@@ -126,6 +131,7 @@ class Story(object):
                 return i
         return -1
 
+    # getting all scenes with > 1 choices for the ML algorithm
     def getAllForkScenes(self):
         scenes_text = []
         for scene in self.graph_dict:
@@ -133,12 +139,12 @@ class Story(object):
                 scenes_text.append(scene.title)
         return scenes_text
 
+    # getting display text for the front-end
     def getStorySoFar(self):
         storyline = []
         prev = None
         for scene in self.path:
             if prev:
-                # print(self.path)
                 for choice in self.graph_dict[prev]:
                     if choice[1] == scene:
                         storyline.append(['> ' + choice[0]])
@@ -147,7 +153,7 @@ class Story(object):
         return storyline
 
 
-
+    # converting story from json object in story.py to a story object using DFS
     def serialize_story(self, story):
         
         def helper(key):
@@ -162,8 +168,6 @@ class Story(object):
                 self.graph_dict[scene].append(1)
                 return scene
             choices = [x for x in story[key]['choices']]
-            # print(f"graph: {self.graph_dict}")
-            # print(f"curr: {scene} and choices: {choices}\n")
 
             for choice in choices:
                 recurse = helper(choice[1])
@@ -175,8 +179,8 @@ class Story(object):
         self.clean_graph()
         game_start = Scene('start','\n'.join(story['start']['text']))
         self.addStart(game_start)
-        # print(self.graph_dict)
 
+    # doubling of fork scenes removed
     def clean_graph(self):
         for scene in self.graph_dict:
             uniq = []
@@ -185,8 +189,5 @@ class Story(object):
                     uniq.append(child)
             self.graph_dict[scene] = uniq
 
-
-    def start_game(self,story):
-        pass
 
             

@@ -1,6 +1,17 @@
 ALIVE = 1
 DEAD = 0
 
+
+# mh370 storyline in the format (one scene_name should be 'start' for the start of the story):
+#
+# story = {
+#     'unique_scene_name': { 
+#         'text': ['display_text_para1','display_text_para2', ...],
+#         'choices': [('choice1_display_text', 'choice1_scene_name'), ('choice1_display_text', 'choice1_scene_name'), ...]},
+#     ...
+# }
+
+
 mh370_crash = {
     'start': {
         'text': [

@@ -9,6 +9,7 @@ import MetricGauge from "../MetricGauge/index";
 import ghost_of_napoleon from "../../images/ghost_of_napoleon.png";
 import "./styles.css";
 
+// tool tips for providing info about the dials
 const survivalTip =
   "This gauge gives your survival chance at this stage as predicted by the ghost.";
 const trustTip =
@@ -30,7 +31,6 @@ export default function AIPane({
 }) {
   const [visibleHint, setVisibleHint] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(3);
-  // const [show, setShow] = useState(false);
   const target = useRef(null);
 
   useEffect(() => {

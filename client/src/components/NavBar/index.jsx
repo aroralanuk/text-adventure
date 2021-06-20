@@ -2,7 +2,6 @@ import React from "react";
 import { Icon } from "semantic-ui-react";
 
 import "./styles.css";
-// import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 
 export default function NavBar({ updateVisible }) {
   return (

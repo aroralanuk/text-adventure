@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
-import {
-  Checkbox,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Menu,
-  Segment,
-  Sidebar,
-} from "semantic-ui-react";
+import { Header, Icon, Menu, Segment, Sidebar } from "semantic-ui-react";
 
 import NavBar from "../components/NavBar/index";
 import StoryPane from "../components/StoryPane/index";
@@ -24,9 +14,12 @@ const StoryMode = () => {
   const [currentHint, setCurrentHint] = useState("no_hint_api");
   const [survival, setSurvival] = useState(0);
   const [currTrust, setCurrTrust] = useState(0);
+
+  // setting mood as variable as it wasn't updating as a state and then assigning it
   const [moody, setMoody] = useState(33);
-  const [visible, setVisible] = useState(false);
   let diffMood = moody;
+
+  const [visible, setVisible] = useState(false);
   const [newGame, setNewGame] = useState(true);
   const [hintTaken, setHintTaken] = useState(false);
 
@@ -34,6 +27,7 @@ const StoryMode = () => {
   const game_id = history.location.state.game_id;
 
   useEffect(() => {
+    // sending a GET request to the API
     API.getGameUpdate(game_id).then((response) => {
       const { choices, story_so_far, hint, survival_chance, trust, mood } =
         response.data;
@@ -43,6 +37,7 @@ const StoryMode = () => {
 
       setNewGame(false);
 
+      // checking if valid survival, trust and mood values
       if (survival_chance >= 0 && survival_chance <= 1.1)
         setSurvival(Math.round(survival_chance * 100));
       if (trust >= 0 && trust <= 1.1) setCurrTrust(Math.round(trust * 100));
@@ -74,7 +69,7 @@ const StoryMode = () => {
       upsetGhost();
     }
 
-    console.log(diffMood);
+    // console.log(diffMood);
     // body with additional hint info
 
     body["hint_taken"] = hintTaken;
@@ -107,6 +102,7 @@ const StoryMode = () => {
     setHintTaken(true);
   };
 
+  // if disagree with hint
   const upsetGhost = () => {
     if (diffMood >= 70) {
       diffMood = 100;
@@ -115,6 +111,7 @@ const StoryMode = () => {
     }
   };
 
+  // if agree with hint
   const delightGhost = () => {
     if (diffMood <= 30) {
       diffMood = 0;
@@ -155,6 +152,8 @@ const StoryMode = () => {
         </Segment>
       </Sidebar.Pusher>
 
+      {/* sidebar component for the 'About us' */}
+      {/* TODO: push it to a separate file */}
       <Sidebar
         as={Menu}
         animation="overlay"

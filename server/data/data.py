@@ -21,9 +21,11 @@ from app.initFirestore import db
 
 import pandas as pd
 
+# file for gathering similar language hints
 urlfile = "https://raw.githubusercontent.com/aroralanuk/text-adventure/main/server/language/hints.csv"
 df = pd.read_csv(urlfile)
 
+# gathering all fork scenes
 FEATURE_IDX = {
     "airport_arrival": 0,     #DTF or Starbucks
     "starbucks": 1,           #Regular coffee or 3 shots
@@ -35,6 +37,7 @@ FEATURE_IDX = {
 }
 
 
+# default hints if the sentence similar hints not found
 FEATURES_SIZE = len(FEATURE_IDX)
 arrivalHint1 = "ARGHH I be starvin. Din Tai Fung sounds good, i wants t' go thar"
 arrivalHint2 = "ARGHH I be parched. Lets get some black brew at that there Starbucks"
@@ -63,17 +66,19 @@ HINTS = {
 }
 
 # generating
+# sentence similar hints already generated, now picking randomly out of the 100 closest sentences
 indexy = 0
 for k,v in FEATURE_IDX.items():
     pref_index = round(random.random() * 20)
     HINTS[k] = (df.loc[indexy*100 + pref_index,'hint'],df.loc[indexy*100 + pref_index + 100,'hint'])
     indexy = indexy + 2
 
-
+# printing output metrics
 def metrics(y_true, y_pred):
     print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
     print('\nReport:\n', classification_report(y_true, y_pred))
 
+# vectorizing in order of choices made from the choice dict
 def getChoiceVector(choiceDict):
     vector = [-1]*FEATURES_SIZE
     for choice in choiceDict.keys():
@@ -81,6 +86,7 @@ def getChoiceVector(choiceDict):
             vector[FEATURE_IDX[choice]] = choiceDict[choice]
     return vector
 
+# getting the prediction for each scene
 def getPrediction(currentChoices, currentScene, model):
     returnDict = {}
 
@@ -93,6 +99,7 @@ def getPrediction(currentChoices, currentScene, model):
     returnDict["1"] = (model.predict_proba(currentChoices.reshape(1, -1))[0], HINTS[currentScene][1])
     return returnDict
 
+# training the model on the game vector at the start of each game
 def trainNewModel():
     #import data
     docs = db.collection('game_played').where('dead_or_alive', '!=', -1).stream()
